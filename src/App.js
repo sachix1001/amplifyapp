@@ -34,11 +34,16 @@ function App() {
   }
 
   async function createNote() {
+    console.log("createNote -> formData.image", formData);
+
     if (!formData.name || !formData.description) return;
     await API.graphql({
       query: createNoteMutation,
-      variables: { input: formData },
+      variables: {
+        input: { name: formData.name, description: formData.description },
+      },
     });
+
     if (formData.image) {
       const image = await Storage.get(formData.image);
       formData.image = image;
@@ -87,9 +92,7 @@ function App() {
             <h2>{note.name}</h2>
             <p>{note.description}</p>
             <button onClick={() => deleteNote(note)}>Delete note</button>
-            {
-            note.image && <img src={note.image} style={{ width: 400 }} />
-            }
+            {note.image && <img src={note.image} style={{ width: 400 }} />}
           </div>
         ))}
       </div>
